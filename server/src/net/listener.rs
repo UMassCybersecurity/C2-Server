@@ -32,12 +32,13 @@ fn handle_client_connection(connection: TcpStream) {
 	// TODO: Filter IPs with function is_allowed_ip
 	// and log all connections (both attempted and
 	// established)
-	log::log("");
+	log::log("", connection);
 }
 
 // Activates connection to C2 server with client
 fn activate_connection(connection: TcpStream) {
 	// TODO: Create connection and allow commands to be sent and received
+	log::log("", connection);
 }
 
 // Checks provided ip with white-listed IPs
