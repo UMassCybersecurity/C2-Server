@@ -1,4 +1,4 @@
-#[path = "net/listener.rs"]
+#[path = "core/net/listener.rs"]
 mod listener;
 
 // Main function
