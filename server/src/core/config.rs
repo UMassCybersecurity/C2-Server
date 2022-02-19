@@ -28,7 +28,7 @@ pub fn remove_white_listed_ip(user: &str) -> bool {
 }
 
 // Adds/removes user to white-listted IPs
-fn update_listed_ips<'a>(ips: HashMap<&'a str, &'a Ipv4Addr>) {
+fn update_white_listed_ips<'a>(ips: HashMap<&'a str, &'a Ipv4Addr>) {
 	// TODO: Update white-listed IPs and user associated to IP from file /config/white-listed-ips.json call map_to_json to update
 }
 
