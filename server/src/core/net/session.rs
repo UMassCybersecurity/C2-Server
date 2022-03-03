@@ -12,6 +12,7 @@ struct Session {
     session_type: SessionType,
 }
 
+// TODO: Start session from TcpStream
 pub fn start_session(connection: TcpStream) {}
 
 // TODO: Create session
