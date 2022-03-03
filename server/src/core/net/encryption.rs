@@ -1,7 +1,7 @@
-pub fn encrypt<'a>(msg: &'a str) -> &'a str {
+pub fn encrypt(msg: &str) ->  &str {
     return msg;
 }
 
-pub fn decrypt<'a>(cmd: &'a str) -> &'a str {
+pub fn decrypt(cmd: &str) ->  &str {
     return cmd;
 }
