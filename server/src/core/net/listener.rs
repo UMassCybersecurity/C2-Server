@@ -1,6 +1,6 @@
-use std::thread;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
 use std::io;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream};
+use std::thread;
 
 #[path = "../config.rs"]
 mod config;
@@ -10,6 +10,9 @@ mod log;
 
 #[path = "encryption.rs"]
 mod encryption;
+
+#[path = "session.rs"]
+mod session;
 
 // TODO: https://trello.com/c/FftuRBn1
 pub fn init_host_listener(port: u16) -> Result<bool, io::Error> {
@@ -22,7 +25,7 @@ pub fn init_host_listener(port: u16) -> Result<bool, io::Error> {
 			handle_client_connection(stream);
 		});
 	}
-	return Ok(true)
+	return Ok(true);
 }
 
 // TODO: https://trello.com/c/Tk2AFl04
@@ -42,6 +45,5 @@ fn is_allowed_ip(ip: Ipv4Addr) -> bool {
 
 // TODO: https://trello.com/c/XWKCgSqY
 fn create_socket(port: u16) -> SocketAddr {
-	let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), port);
-	return socket;
+	return SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), port);
 }

@@ -3,7 +3,7 @@ mod listener;
 
 // Main function
 fn main() {
-    println!("Hello, world!");
+	println!("Hello, world!");
 	init();
 }
 
