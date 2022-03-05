@@ -24,7 +24,7 @@ fn create_session(connection: TcpStream) -> Session {
 }
 
 // TODO: Transfer session to new ip
-fn transfer_session(session: Session, ip: IpAddr, session_type: SessionType) -> Session {
+fn transfer_session(session: Session, new_ip: IpAddr, session_type: SessionType) -> Session {
     // TODO: Call create_bind_session or create_reverse_session based on session_type
     return Session {
         connection: session.connection,
