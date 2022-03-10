@@ -1,7 +1,10 @@
-#[path = "core/commands.rs"]
-mod commands;
+mod core;
 
 use std::env;
+use std::thread;
+use std::sync::{Arc, Mutex};
+use self::core::client::Client;
+use self::core::commands::command_loop;
 
 fn main() {
     init();
@@ -9,5 +12,12 @@ fn main() {
 
 // Initialize
 fn init() {	
-	commands::command_loop();
+    let client = Client::default();
+    let client_mutex =  Arc::new(Mutex::new(client));
+
+    let command_thread = thread::spawn(move || {
+        command_loop(client_mutex);
+    });
+
+    command_thread.join();
 }
