@@ -1,6 +1,5 @@
+use std::net::{IpAddr, Ipv4Addr, Shutdown, SocketAddr, TcpListener, TcpStream};
 use std::thread;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpListener, TcpStream, Shutdown};
-use std::io;
 
 #[path = "../config.rs"]
 mod config;
@@ -20,10 +19,9 @@ mod encryption;
 #[path = "session.rs"]
 mod session;
 
-// TODO: https://trello.com/c/FftuRBn1
-pub fn init_host_listener(port: u16) -> Result<bool, io::Error> {
-	let socket = create_socket(port);
-	let listener = TcpListener::bind(socket).unwrap();
+// Starts listened loop
+pub fn init_host_listener(port: u16) {
+	let listener = TcpListener::bind(create_socket(port)).unwrap();
 	// Loop to handle connections
 	for stream in listener.incoming() {
 		let stream = stream.unwrap();
@@ -31,13 +29,19 @@ pub fn init_host_listener(port: u16) -> Result<bool, io::Error> {
 			handle_client_connection(stream);
 		});
 	}
-	return Ok(true);
 }
 
-// TODO: https://trello.com/c/Tk2AFl04
+// Handle all connections received
 fn handle_client_connection(connection: TcpStream) {
-	log::log(format!("{:?} is attempting to connect", connection.peer_addr().unwrap().ip()).as_str());
-	
+	// Log connection attempts
+	log::log(
+		format!(
+			"{:?} is attempting to connect",
+			connection.peer_addr().unwrap().ip()
+		)
+		.as_str(),
+	);
+	// Accept or reject connection
 	match is_allowed_ip(connection.peer_addr().unwrap().ip()) {
 		true => {
 				log::log(format!("{:?} is allowed to connect", connection
@@ -73,7 +77,7 @@ fn is_allowed_ip(ip: IpAddr) -> bool {
 	return true;
 }
 
-// TODO: https://trello.com/c/XWKCgSqY
+// Returns SocketAddr for a new listener connection
 fn create_socket(port: u16) -> SocketAddr {
 	return SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), port);
 }
