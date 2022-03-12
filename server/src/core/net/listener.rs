@@ -8,6 +8,12 @@ mod config;
 #[path = "../log.rs"]
 mod log;
 
+#[path = "../commands.rs"]
+mod commands;
+
+#[path = "../clients.rs"]
+mod clients;
+
 #[path = "encryption.rs"]
 mod encryption;
 
@@ -34,7 +40,7 @@ fn handle_client_connection(connection: TcpStream) {
 	
 	match is_allowed_ip(connection.peer_addr().unwrap().ip()) {
 		true => {
-				log::log(format!("{:?} is allowed", connection
+				log::log(format!("{:?} is allowed to connect", connection
 					.peer_addr()
 					.unwrap()
 					.ip())
@@ -42,7 +48,7 @@ fn handle_client_connection(connection: TcpStream) {
 				activate_connection(connection);
 		}
 		false => {
-				log::log(format!("{:?} is not allowed", connection
+				log::log(format!("{:?} is not allowed to connect", connection
 					.peer_addr()
 					.unwrap()
 					.ip())
@@ -54,7 +60,12 @@ fn handle_client_connection(connection: TcpStream) {
 
 // TODO: https://trello.com/c/p8NmLJxO
 fn activate_connection(connection: TcpStream) {
-	log::log("");
+	let mut client = clients::Client::default();
+	client.set_client(connection);
+
+	thread::spawn(|| {
+		commands::command_loop(client);
+	});
 }
 
 // TODO: https://trello.com/c/Q9sxhqQH

@@ -1,29 +1,30 @@
 use std::net::TcpStream;
-use std::io::{stdin, stdout, Write};
+use std::io::{stdin, stdout, Write, BufRead, BufReader};
 use std::net::IpAddr;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 
-use super::client::Client;
+use super::server::Server;
 
 #[path = "net/connection.rs"]
 mod connection;
 
 
 // Starts loops for commands
-pub fn command_loop(client_mutex: Arc<Mutex<Client>>) {
-	let mut input = String::new();
+pub fn command_loop(server_mutex: Arc<Mutex<Server>>) {
+	let mut reader = BufReader::new(stdin());
 	loop {	
-		print!(">>");
+		print!(">> ");
 		stdout().flush();
-		stdin().read_line(&mut input);			
-		parse_command(input.trim(), Arc::clone(&client_mutex));	
+		let mut input = String::new();
+		reader.read_line(&mut input);			
+		parse_command(&input, Arc::clone(&server_mutex));	
 		input.clear();	
 	}
 }
 
 // Check to see if is command, if so execute
-fn parse_command(cmd: &str, client_mutex: Arc<Mutex<Client>>) {
+fn parse_command(cmd: &str, server_mutex: Arc<Mutex<Server>>) {
 	let tokens: Vec<&str> = cmd.split_whitespace().collect::<Vec<&str>>();
 	if tokens.len() == 0 {
 		return
@@ -34,9 +35,14 @@ fn parse_command(cmd: &str, client_mutex: Arc<Mutex<Client>>) {
 		}
 		"connect" => {
 			let socket = connection::init_connection(IpAddr::from_str(tokens[1]).unwrap(), tokens[2].parse::<u16>().unwrap());
-			let mut client = client_mutex.lock().unwrap();
-			client.set_server(socket);
+			let mut server = server_mutex.lock().unwrap();
+			server.set_server(socket);
 		}
-		_ => return
+		_ => {
+			let mut server = server_mutex.lock().unwrap();
+			if server.is_connected() {
+				server.send(cmd)
+			}
+		}
 	}
 }
